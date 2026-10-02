@@ -60,3 +60,13 @@ These supersede earlier notes reporting Docker and Jupyter access as blocked.
 
 Published source and selected aggregate evidence to Eminxe/Credit-risk-portfolio.
 See GitHub Actions for current remote validation results; the checks above describe local execution.
+
+## Remote validation — completed 2026-10-02
+
+[Full GitHub Actions run](https://github.com/Eminxe/Credit-risk-portfolio/actions/runs/37004011370) succeeded for commit
+d9f52d0245b948d3a9ea5dbf66fee74dc00a7688. Both jobs succeeded: tests and real-data.
+All six studies downloaded their sources afresh, then passed independent reconciliation,
+SQL load/idempotence, notebook execution and authenticated Jupyter checks. The fresh SQL database
+contains 30,000 rows in each core table and 138 aggregate rows. Artifact verified-case-outputs
+was uploaded (8,846,324 bytes). See CI_RESULT.md for the artifact digest and expiry.
+Earlier local-only/pending publication notes above describe the previous state and are superseded.

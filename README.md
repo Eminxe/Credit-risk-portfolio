@@ -19,6 +19,12 @@ Start with [Portfolio overview](PORTFOLIO_EN.md), the executed
 | 05 | Estimate incremental email effects | Hillstrom randomized no-email control; uncertainty and Holm correction |
 | 06 | Monitor vintage outcomes | Original LendingClub snapshot; terminal outcomes, not roll rates |
 
+## Verified on GitHub
+
+[Full validation run](https://github.com/Eminxe/Credit-risk-portfolio/actions/runs/37004011370) passed on 2026-10-02: all six studies,
+16 tests, independent reconciliation, PostgreSQL, executed notebook and authenticated Jupyter.
+See [CI evidence](CI_RESULT.md) for the tested commit and downloadable results.
+
 ## Reproduce
 
 Docker Desktop with Linux containers is required. Run from this repository in PowerShell
