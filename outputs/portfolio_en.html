@@ -1,0 +1,107 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>PORTFOLIO_EN.md</title><style>
+body{font:17px/1.65 system-ui, sans-serif;color:#172c3b;background:#f4f6f7;margin:0}
+main{max-width:1000px;margin:40px auto;background:white;padding:55px 65px;border-top:8px solid #244b68}
+h1{font-size:36px;line-height:1.2}h2{margin-top:2em;color:#244b68;font-size:24px}
+table{border-collapse:collapse;width:100%;font-size:15px}td,th{padding:10px;border-bottom:1px solid #ced9df;text-align:left}
+th{background:#eaf0f3}a{color:#155c8b}pre{overflow:auto;background:#eef2f5;padding:20px}
+@media(max-width:700px){main{margin:0;padding:24px}h1{font-size:28px}table{display:block;overflow-x:auto}}
+@media print{body{background:white}main{margin:0;padding:0;border:0}h2{break-after:avoid}tr{break-inside:avoid}}
+</style><main><h1>Risk analytics: six reproducible public-data studies</h1>
+<p><strong>Scope:</strong> independent portfolio research, not a Plata engagement.
+<strong>Evidence:</strong> executed Python notebook, PostgreSQL tables, hashed artifacts and independent reconciliation.
+<strong>Reading order:</strong> this overview → outputs/casebook.html → code and configuration.</p>
+<h2>01 — Credit default-payment risk</h2>
+<p>Use 30,000 UCI Taiwan credit-card records to predict next-month default payment.
+The source contains 6,636 positive outcomes (22.12%). Features summarize April–September 2005.
+Customer ID, outcome, sex and marital status are excluded from predictors.
+Identical engineered-feature groups stay together through all splits and calibration.</p>
+<p>Compare calibrated logistic regression with histogram gradient boosting. Select by development
+out-of-fold log loss before evaluating the reserved 6,006-record holdout.</p>
+<table>
+<thead>
+<tr>
+  <th>Holdout measure</th>
+  <th style="text-align:right">Logistic</th>
+  <th style="text-align:right">Selected boosting</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>ROC-AUC</td>
+  <td style="text-align:right">0.752686</td>
+  <td style="text-align:right">0.782006</td>
+</tr>
+<tr>
+  <td>Brier score</td>
+  <td style="text-align:right">0.140978</td>
+  <td style="text-align:right">0.135352</td>
+</tr>
+<tr>
+  <td>Log loss</td>
+  <td style="text-align:right">0.447712</td>
+  <td style="text-align:right">0.429338</td>
+</tr>
+</tbody>
+</table>
+<p>The selected AUC has a group-bootstrap 95% interval of <strong>0.7669–0.7965</strong> (500 draws;
+conditional on the fitted model). Subgroup diagnostics are included, without a fairness certification.
+This is grouped random validation on historical data. It cannot establish future-period or Plata performance.</p>
+<h2>02 — Risk-to-NPV scenario engine</h2>
+<p>Link the scored customer artifact to monthly survival cash flows, explicit utilization and LGD,
+and annual discounting. Preserve OOF scores for development customers and held-out predictions
+for reserved customers. This is a research portfolio, not a single production scoring deployment.</p>
+<p>The original 12-month scenario uses 24% annual interest, 8% funding, 12% discounting,
+40% utilization, 60% LGD, monthly servicing of 30 TWD and acquisition cost of 500 TWD.
+Its NPV is <strong>−723.84 million TWD</strong>. A one-month existing-account comparison with zero acquisition
+cost gives <strong>−185.77 million TWD</strong>. Neither value is observed profit or an investment forecast.
+One-month default payment is not validated as a constant multi-month loss hazard.</p>
+<h2>03 — Limit strategy under a scenario loss budget</h2>
+<p>Search multipliers 0.75, 1, 1.25 and 1.5 using an assumed PD-odds elasticity of 0.25.
+Return a feasible discrete allocation with a dual upper bound on its objective.
+Under the original assumptions, every account selects 0.75: NPV becomes <strong>−528.62 million TWD</strong>,
+a <strong>195.21 million TWD scenario improvement</strong> while remaining negative.
+The five configured budgets produce the same allocation: the risk constraint is slack.
+There is no demonstrated nontrivial frontier or causal justification for cutting every limit.</p>
+<h2>04 — Campaign response: an honest drift finding</h2>
+<p>Use 45,211 UCI Bank Marketing records in documented source date order.
+Exclude call duration and current-campaign contact fields. Use a 60%/20%/20% ordered
+training/validation/holdout design and expanding-window calibration.</p>
+<p>The selected model's later-holdout AUC is <strong>0.5923</strong>, Brier <strong>0.2689</strong> and log loss <strong>0.8399</strong>.
+A development-prevalence baseline has log loss <strong>0.8994</strong>. These results show limited ranking
+and substantial probability error; they do not justify deployment.
+EUR response-value/contact-cost assumptions give retrospective proxies, not incremental campaign ROI.
+No no-contact control is available in this source.</p>
+<h2>05 — Randomized email incrementality</h2>
+<p>Use all 64,000 Hillstrom customers assigned to men's email, women's email or no email.
+Estimate two-week intent-to-treat effects against control, Welch pointwise 95% intervals,
+and Holm-adjusted p-values across six contrasts.</p>
+<p>Men's email raises conversion by <strong>0.6805 percentage points</strong> and spend by <strong>$0.7698/customer</strong>;
+women's email raises conversion by <strong>0.3111 points</strong> and spend by <strong>$0.4244/customer</strong>.
+At an assumed 40% contribution margin and $0.05 email cost, net contribution differences are
+<strong>$0.2579</strong> and <strong>$0.1198</strong> per assigned customer. Source randomization supports causal
+interpretation for this retailer and window; transfer to another business requires new evidence.</p>
+<h2>06 — Vintage monitoring with clear endpoint definitions</h2>
+<p>Load the original LendingClub archive: 42,535 loan records after removing three footer rows.
+Exclude 2,749 explicitly non-policy loans. Among the remaining <strong>39,786 loans</strong>, <strong>5,670</strong>
+are charged off: <strong>14.2512%</strong> of terminal outcomes. Of 55 monthly origination cohorts,
+42 meet the reporting rule of at least 100 loans and 95% terminal coverage.</p>
+<p>Grade and vintage charts describe final status at an undated snapshot. They are not fixed-horizon
+PD estimates or monthly delinquency transitions. The repository provides a tested roll-rate
+function for future account-month data; it does not invent missing historical transitions.</p>
+<h2>Engineering and review evidence</h2>
+<p>Python 3.12, Docker Compose, PostgreSQL 16, executed Jupyter notebook, 16 passing unit tests,
+independent source reconciliation and idempotent SQL loads. The pipeline preserves data receipts,
+SHA-256 lineage and explicit assumptions. Image digests and Python package versions are pinned.
+CI is configured; remote execution is pending a repository destination.</p>
+<p>This project was developed with AI coding assistance. The inspectable calculations and limitations,
+rather than unverified claims of business impact, are the portfolio evidence.</p>
+<h2>Sources</h2>
+<ul>
+<li>Yeh, I. (2009), <a href="https://doi.org/10.24432/C55S3H">Default of Credit Card Clients</a>, UCI, CC BY 4.0.</li>
+<li>Moro, Cortez and Rita, <a href="https://doi.org/10.24432/C5K306">Bank Marketing</a>, UCI, CC BY 4.0.</li>
+<li>Kevin Hillstrom, <a href="https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html">MineThatData challenge</a>.</li>
+<li><a href="https://resources.lendingclub.com/LoanStats3a.csv.zip">Original LendingClub LoanStats3a archive</a>;
+the download receipt records the upstream redirect and hash.</li>
+</ul>
+<p>Exact outputs and uncertainty tables: <a href="casebook.html">executed casebook</a>.</p>
+</main></html>

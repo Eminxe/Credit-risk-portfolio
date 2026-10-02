@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "verified_at": "2026-10-01T10:57:13.389369+00:00",
+  "postgres_version": "16.15 (Debian 16.15-1.pgdg12+2)",
+  "jupyter_authenticated_http": 200,
+  "table_counts": {
+    "customer_scores": 30000,
+    "customer_economics": 30000,
+    "limit_strategy": 30000,
+    "aggregate_results": 148
+  }
+}

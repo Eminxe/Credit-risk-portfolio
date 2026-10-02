@@ -1,0 +1,78 @@
+{
+  "status": "passed",
+  "started_at": "2026-10-01T10:55:46.272052+00:00",
+  "checks": [
+    {
+      "command": [
+        "-m",
+        "ruff",
+        "check",
+        "."
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "-m",
+        "pytest",
+        "-q"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "scripts/verify_outputs.py"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "scripts/verify_additional.py"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "scripts/load_postgres.py"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "scripts/load_additional_postgres.py"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "scripts/load_postgres.py"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "scripts/load_additional_postgres.py"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "scripts/build_notebook.py"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "scripts/execute_notebook.py"
+      ],
+      "status": "passed"
+    },
+    {
+      "command": [
+        "scripts/export_reading_guides.py"
+      ],
+      "status": "passed"
+    }
+  ],
+  "finished_at": "2026-10-01T10:56:54.637663+00:00"
+}

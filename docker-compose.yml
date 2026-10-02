@@ -1,0 +1,51 @@
+name: plata-risk-casebook
+x-analytics: &analytics
+  build: .
+  image: plata-risk-casebook:local
+  working_dir: /workspace
+  volumes:
+    - .:/workspace
+  environment:
+    PGHOST: postgres
+    PGPORT: 5432
+    PGDATABASE: ${POSTGRES_DB:-plata_risk}
+    PGUSER: ${POSTGRES_USER:-plata}
+    PGPASSWORD: ${POSTGRES_PASSWORD:?Generate .env using scripts/init_env.py}
+    OMP_NUM_THREADS: 2
+    MPLBACKEND: Agg
+  depends_on:
+    postgres:
+      condition: service_healthy
+services:
+  postgres:
+    image: postgres:16-bookworm@sha256:efedf3595f1d6f415c08568ba171029bf54052e754cc9f030e3f2412b21f3d67
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-plata_risk}
+      POSTGRES_USER: ${POSTGRES_USER:-plata}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Generate .env using scripts/init_env.py}
+    ports:
+      - '127.0.0.1:${POSTGRES_PORT:-5433}:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/001-init.sql:ro
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  analytics:
+    <<: *analytics
+  jupyter:
+    <<: *analytics
+    ports:
+      - '127.0.0.1:${JUPYTER_PORT:-8888}:8888'
+    command: [python, scripts/start_jupyter.py]
+    env_file: .env
+    healthcheck:
+      test: [CMD, python, scripts/jupyter_ready.py]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+volumes:
+  postgres_data:

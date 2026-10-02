@@ -1,0 +1,30 @@
+# Illustrative research assumptions, not observed Plata prices or policies.
+# All monetary amounts use TWD to match the historical UCI source.
+base:
+  currency: TWD
+  horizon_months: 12
+  annual_interest_rate: 0.24
+  annual_funding_rate: 0.08
+  annual_discount_rate: 0.12
+  monthly_servicing_cost: 30.0
+  acquisition_cost: 500.0
+  lgd: 0.60
+  utilization: 0.40
+  # Constant monthly conditional default hazard; no recovery cash-flow model.
+  hazard_assumption: constant_monthly
+  # PD odds elasticity to a limit multiplier: unestimated scenario, NOT causal.
+  limit_pd_odds_elasticity: 0.25
+  limit_multipliers: [0.75, 1.0, 1.25, 1.5]
+  risk_budget_ratio: 1.0
+  frontier_budget_ratios: [0.9, 1.0, 1.05, 1.1, 1.2]
+sensitivity:
+  lgd: [0.4, 0.6, 0.8]
+  annual_interest_rate: [0.18, 0.24, 0.30]
+# Additional comparison, not a replacement selected to manufacture profit.
+comparisons:
+  existing_account_one_month:
+    horizon_months: 1
+    acquisition_cost: 0.0
+  original_twelve_month_stress:
+    horizon_months: 12
+    acquisition_cost: 500.0

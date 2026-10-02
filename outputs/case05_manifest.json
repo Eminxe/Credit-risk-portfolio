@@ -1,0 +1,31 @@
+{
+  "status": "success",
+  "finished_at": "2026-10-01T10:49:35.102318+00:00",
+  "source": {
+    "url": "http://www.minethatdata.com/Kevin_Hillstrom_MineThatData_E-MailAnalytics_DataMiningChallenge_2008.03.20.csv",
+    "filename": "hillstrom.csv",
+    "citation": "https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html",
+    "license": "Public research challenge; redistribution license not established",
+    "resolved_url": "http://www.minethatdata.com/Kevin_Hillstrom_MineThatData_E-MailAnalytics_DataMiningChallenge_2008.03.20.csv",
+    "downloaded_at": "2026-10-01T10:29:55.418138+00:00",
+    "sha256": "0e5893329d8b93cefecc571777672028290ab69865718020c78c7284f291aece"
+  },
+  "rows": 64000,
+  "arm_counts": {
+    "Womens E-Mail": 21387,
+    "Mens E-Mail": 21307,
+    "No E-Mail": 21306
+  },
+  "allocation_chi_square_p": 0.9036929575604196,
+  "max_abs_baseline_smd": 0.01365900039927897,
+  "assumptions": {
+    "currency": "USD",
+    "contribution_margin": 0.4,
+    "cost_per_email": 0.05,
+    "alpha": 0.05,
+    "multiple_testing": "holm"
+  },
+  "results_sha256": "752ead2f41c3a11da67d83b3d6b6d6dc0029ba2f4bc2adbf5e9b8612fbd41958",
+  "inference": "Intent-to-treat mean differences, Welch pointwise CIs; Holm p-values across six contrasts",
+  "caveat": "Randomization relies on the source design description; effects concern this retailer and two-week window"
+}

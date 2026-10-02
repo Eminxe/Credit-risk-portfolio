@@ -1,0 +1,19 @@
+# Illustrative scenario inputs; no bank-specific economic claim.
+campaign:
+  currency: EUR
+  value_per_subscription: 100.0
+  cost_per_contact: 2.0
+  contact_fractions: [1.0, 0.5, 0.3, 0.2, 0.1]
+experiment:
+  currency: USD
+  contribution_margin: 0.40
+  cost_per_email: 0.05
+  alpha: 0.05
+  multiple_testing: holm
+portfolio:
+  terminal_statuses: [Fully Paid, Charged Off]
+  bad_status: Charged Off
+  minimum_terminal_coverage: 0.95
+  minimum_cohort_size: 100
+  # Not a time-at-risk endpoint: vintage summaries at the source snapshot only.
+  endpoint: terminal_status_at_snapshot

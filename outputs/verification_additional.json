@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "verified_at": "2026-10-01T10:56:23.517331+00:00",
+  "configuration_sha256": "201319ffceb4d714896315252fb0ca7c85146e9e0c467244da14331f94520e93",
+  "checks": [
+    "bank source-row labels and holdout metrics",
+    "campaign scenario arithmetic",
+    "Hillstrom arm denominators and raw mean effects",
+    "independent Welch tests and Holm correction",
+    "LendingClub eligibility, cohort counts, losses and principal",
+    "artifact hashes"
+  ]
+}

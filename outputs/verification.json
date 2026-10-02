@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "verified_at": "2026-10-01T10:55:59.070665+00:00",
+  "rows": 30000,
+  "checks": [
+    "source IDs and default count",
+    "feature-group split isolation",
+    "holdout AUC and Brier",
+    "decile totals",
+    "cross-case customer IDs",
+    "expected loss formula",
+    "portfolio sums",
+    "risk budget feasibility",
+    "dual bound",
+    "artifact hashes"
+  ]
+}

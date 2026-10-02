@@ -1,0 +1,45 @@
+name: validate
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: pip install -r requirements-linux.lock && pip install --no-deps -e '.[dev]'
+      - run: python -m ruff check .
+      - run: python -m pytest -q
+      - run: python scripts/init_env.py
+      - run: docker compose config --quiet
+      - run: docker compose build analytics
+      - run: docker compose up -d --wait postgres
+      - run: docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "SELECT count(*) FROM risk.runs"'
+      - if: always()
+        run: docker compose down
+  real-data:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/init_env.py
+      - run: docker compose build analytics
+      - run: docker compose up -d --wait postgres
+      - run: docker compose run --rm analytics python scripts/run_pipeline.py
+      - run: docker compose run --rm analytics python scripts/validate_project.py
+      - run: docker compose up -d --wait jupyter
+      - run: docker compose exec -T jupyter python scripts/healthcheck.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: verified-case-outputs
+          path: outputs/
+      - if: always()
+        run: docker compose down

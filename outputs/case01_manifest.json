@@ -1,0 +1,23 @@
+{
+  "status": "success",
+  "finished_at": "2026-10-01T10:39:32.744309+00:00",
+  "source": {
+    "url": "https://archive.ics.uci.edu/static/public/350/default%2Bof%2Bcredit%2Bcard%2Bclients.zip",
+    "doi": "https://doi.org/10.24432/C55S3H",
+    "license": "CC BY 4.0",
+    "downloaded_at": "2026-10-01T06:23:49.690877+00:00",
+    "sha256": "56c885f84457f6680f8438f02bfcdac9579323d8a94465ee5f26e32baa727602"
+  },
+  "selected_model": "hist_gradient_boosting",
+  "selection": "minimum development OOF log loss",
+  "scores_sha256": "a565c8ca81521248c249c2b77d3caaea0997aac3c4e488820e3b941ef1ff3227",
+  "model_sha256": "aa6ab9c66c026d877ac9a243f27a752563e143b6e280c7c7639bb6fbd45392dd",
+  "seed": 42,
+  "versions": {
+    "numpy": "2.5.3",
+    "pandas": "2.3.3",
+    "scipy": "1.18.1",
+    "scikit-learn": "1.7.2",
+    "pyarrow": "23.0.1"
+  }
+}

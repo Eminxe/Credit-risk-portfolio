@@ -1,0 +1,38 @@
+{
+  "status": "success",
+  "finished_at": "2026-10-01T10:49:38.897894+00:00",
+  "source": {
+    "url": "https://resources.lendingclub.com/LoanStats3a.csv.zip",
+    "filename": "LoanStats3a.csv.zip",
+    "citation": "https://resources.lendingclub.com/LoanStats3a.csv.zip",
+    "license": "Original public LendingClub loan statistics; redistribution license not established",
+    "resolved_url": "https://resources.happen.com:443/LoanStats3a.csv.zip",
+    "downloaded_at": "2026-10-01T10:30:01.377305+00:00",
+    "sha256": "6f93fc97f0ad26718ed66c6199931ac6204ce80d7c14da0215b529b0891f12be",
+    "source_header": "Notes offered by Prospectus (https://www.lendingclub.com/info/prospectus.action)",
+    "footer_rows_removed": 3,
+    "id_available": false
+  },
+  "source_rows": 42535,
+  "policy_excluded_rows": 2749,
+  "analyzed_rows": 39786,
+  "terminal_rows": 39786,
+  "charged_off_rows": 5670,
+  "terminal_chargeoff_rate": 0.14251244156235862,
+  "origination_from": "2007-06-01",
+  "origination_to": "2011-12-01",
+  "cohort_count": 55,
+  "eligible_cohort_count": 42,
+  "assumptions": {
+    "terminal_statuses": [
+      "Fully Paid",
+      "Charged Off"
+    ],
+    "bad_status": "Charged Off",
+    "minimum_terminal_coverage": 0.95,
+    "minimum_cohort_size": 100,
+    "endpoint": "terminal_status_at_snapshot"
+  },
+  "results_sha256": "53d869e9e4d8432820d971c1d7c2f801026518618f824645fe68d9d37786a3eb",
+  "caveat": "Lifetime terminal status at an undated source snapshot; not fixed-horizon PD, causal grade effect or roll rates. No borrower IDs available."
+}

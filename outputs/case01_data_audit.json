@@ -1,0 +1,41 @@
+{
+  "rows": 30000,
+  "source_features": 23,
+  "missing_cells": 0,
+  "default_count": 6636,
+  "development_rows": 23994,
+  "holdout_rows": 6006,
+  "duplicate_feature_rows": 124,
+  "negative_bill_cells": 3932,
+  "education_codes": {
+    "2": 14030,
+    "1": 10585,
+    "3": 4917,
+    "5": 280,
+    "4": 123,
+    "6": 51,
+    "0": 14
+  },
+  "repayment_codes": [
+    -2,
+    -1,
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "group_overlap": 0,
+  "excluded_predictors": [
+    "customer_id",
+    "default",
+    "SEX",
+    "MARRIAGE"
+  ],
+  "scope": "Taiwan 2005 behavioral default-payment prediction, not Plata data or IFRS9 PD",
+  "validation": "Grouped random holdout, not out-of-time validation"
+}
