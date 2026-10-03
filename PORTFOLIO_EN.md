@@ -82,7 +82,7 @@ function for future account-month data; it does not invent missing historical tr
 
 ## Engineering and review evidence
 
-Python 3.12, Docker Compose, PostgreSQL 16, executed Jupyter notebook, 16 passing unit tests,
+Python 3.12, Docker Compose, PostgreSQL 16, executed Jupyter notebook, 19 passing unit tests,
 independent source reconciliation and idempotent SQL loads. The pipeline preserves data receipts,
 SHA-256 lineage and explicit assumptions. Image digests and Python package versions are pinned.
 Full remote CI passed on 2026-10-02 (GitHub Actions run 37004011370); all six studies and infrastructure checks succeeded.

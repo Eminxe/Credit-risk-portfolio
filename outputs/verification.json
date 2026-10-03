@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "verified_at": "2026-10-01T10:55:59.070665+00:00",
+  "verified_at": "2026-10-02T20:13:10.749463+00:00",
   "rows": 30000,
   "checks": [
     "source IDs and default count",

@@ -1,26 +1,39 @@
-param([ValidateSet('test','pipeline','verify','notebook')][string]$Task = 'pipeline')
+param([ValidateSet('setup','test','pipeline','verify','notebook','validate','package','jupyter','down')]
+      [string]$Task = 'pipeline')
 $ErrorActionPreference = 'Stop'
 Set-Location (Split-Path $PSScriptRoot -Parent)
-$env:OMP_NUM_THREADS = '1'
-$env:OPENBLAS_NUM_THREADS = '1'
-$env:MPLCONFIGDIR = Join-Path (Get-Location) '.tmp/matplotlib'
-$candidates = @($env:PLATA_PYTHON, '.venv/Scripts/python.exe', "$env:TEMP/plata-risk-py312/Scripts/python.exe")
-$pythonExe = $null
-foreach ($candidate in $candidates) {
-    if ($candidate -and (Test-Path -LiteralPath $candidate)) {
-        & $candidate -c 'import plata_risk, sklearn' 2>$null
-        if ($LASTEXITCODE -eq 0) { $pythonExe = $candidate; break }
-    }
+
+function Invoke-Docker {
+    & docker @args
+    if ($LASTEXITCODE -ne 0) { throw "Docker task failed: $Task (exit $LASTEXITCODE)" }
 }
-if (-not $pythonExe) { throw 'Create a Python 3.12 environment and pip install -e .[dev], or set PLATA_PYTHON.' }
+function Invoke-Analytics([string]$Script) {
+    Invoke-Docker compose run --rm analytics python $Script
+}
 switch ($Task) {
-    'test' {
-        & $pythonExe -m ruff check src cases scripts tests
-        if ($LASTEXITCODE -ne 0) { throw 'Lint failed' }
-        & $pythonExe -m pytest -q -p no:cacheprovider
+    'setup' {
+        $baseImage = ((Get-Content Dockerfile | Where-Object { $_ -match '^FROM ' } | Select-Object -First 1) -split '\s+')[1]
+        Invoke-Docker run --rm --mount "type=bind,source=$((Get-Location).Path),target=/workspace" -w /workspace $baseImage python scripts/init_env.py
+        Invoke-Docker compose config --quiet
+        Invoke-Docker compose build analytics
+        Invoke-Docker compose up -d --wait postgres
     }
-    'pipeline' { & $pythonExe scripts/run_pipeline.py }
-    'verify' { & $pythonExe scripts/verify_outputs.py }
-    'notebook' { & $pythonExe scripts/build_notebook.py }
+    'test' { Invoke-Docker compose run --rm analytics bash scripts/test.sh }
+    'pipeline' { Invoke-Analytics 'scripts/run_pipeline.py' }
+    'verify' {
+        Invoke-Analytics 'scripts/verify_outputs.py'
+        Invoke-Analytics 'scripts/verify_additional.py'
+    }
+    'notebook' {
+        Invoke-Analytics 'scripts/build_notebook.py'
+        Invoke-Analytics 'scripts/execute_notebook.py'
+        Invoke-Analytics 'scripts/export_reading_guides.py'
+    }
+    'validate' { Invoke-Analytics 'scripts/validate_project.py' }
+    'package' { Invoke-Analytics 'scripts/package_portfolio.py' }
+    'jupyter' {
+        Invoke-Docker compose up -d --wait jupyter
+        Invoke-Docker compose exec -T jupyter python scripts/jupyter_ready.py
+    }
+    'down' { Invoke-Docker compose down }
 }
-if ($LASTEXITCODE -ne 0) { throw "Task failed: $Task" }

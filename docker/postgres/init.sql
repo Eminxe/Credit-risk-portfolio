@@ -35,4 +35,17 @@ CREATE TABLE IF NOT EXISTS risk.limit_strategy (
     PRIMARY KEY (run_id, customer_id),
     FOREIGN KEY (run_id, customer_id) REFERENCES risk.customer_scores(run_id, customer_id)
 );
+CREATE TABLE IF NOT EXISTS risk.additional_runs (
+    run_id text PRIMARY KEY,
+    case_number integer NOT NULL CHECK (case_number BETWEEN 4 AND 6),
+    created_at timestamptz NOT NULL DEFAULT now(),
+    metadata jsonb NOT NULL
+);
+CREATE TABLE IF NOT EXISTS risk.aggregate_results (
+    run_id text REFERENCES risk.additional_runs(run_id),
+    artifact text NOT NULL,
+    row_number integer NOT NULL,
+    payload jsonb NOT NULL,
+    PRIMARY KEY (run_id, artifact, row_number)
+);
 COMMIT;

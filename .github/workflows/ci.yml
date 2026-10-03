@@ -23,7 +23,7 @@ jobs:
       - if: always()
         run: docker compose down
   real-data:
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -37,6 +37,7 @@ jobs:
       - run: docker compose run --rm analytics python scripts/validate_project.py
       - run: docker compose up -d --wait jupyter
       - run: docker compose exec -T jupyter python scripts/healthcheck.py
+      - run: docker compose run --rm analytics python scripts/package_portfolio.py
       - uses: actions/upload-artifact@v4
         with:
           name: verified-case-outputs

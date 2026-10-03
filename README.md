@@ -27,6 +27,20 @@ See [CI evidence](CI_RESULT.md) for the tested commit and downloadable results.
 
 ## Reproduce
 
+Docker-only setup (no host Python installation required):
+
+```powershell
+.\scripts\run_local.ps1 -Task setup
+.\scripts\run_local.ps1 -Task pipeline
+.\scripts\run_local.ps1 -Task validate
+.\scripts\run_local.ps1 -Task jupyter
+.\scripts\run_local.ps1 -Task package
+```
+
+On Linux/WSL, use `bash scripts/bootstrap.sh`, then `make pipeline validate jupyter package`.
+Complete setup before choosing **Dev Containers: Reopen in Container**.
+The equivalent individual commands below are useful if host Python is already available:
+
 Docker Desktop with Linux containers is required. Run from this repository in PowerShell
 or a Linux terminal. Python 3.12 runs inside the container; the Ubuntu system interpreter
 does not need to be replaced.
@@ -37,7 +51,7 @@ docker compose build analytics
 docker compose up -d --wait postgres
 docker compose run --rm analytics python scripts/run_pipeline.py
 docker compose run --rm analytics python scripts/validate_project.py
-docker compose up -d jupyter
+docker compose up -d --wait jupyter
 ```
 
 Open http://localhost:8888 and use the locally generated JUPYTER_TOKEN from .env.
@@ -58,8 +72,8 @@ row counts/idempotence and notebook execution. Unit fixtures are never analysis 
 - src/plata_risk/: data access, transforms, scoring, economics, statistics and plotting.
 - configs/: explicit financial and analytical assumptions.
 - scripts/: orchestration, validation, SQL loaders, notebook export and packaging.
-- docker/postgres/init.sql: core relational schema; additional aggregate tables are created
-  idempotently by scripts/load_additional_postgres.py.
+- docker/postgres/init.sql: all core and aggregate tables. The additional loader also creates
+  its tables idempotently for pre-existing database volumes.
 - outputs/: locally generated evidence, manifests, model artifacts and HTML.
 - tests/: methodological edge cases and independent formula checks.
 - RUNBOOK.md: continuation instructions; EXECUTION_STATUS.md: actual execution status.
@@ -80,4 +94,8 @@ probabilities; scenario LGD, prices and limit response are not measured bank par
 
 CI configuration is included. See the repository Actions tab for remote run results.
 Local execution does not count as a remote CI pass. The original unavailable ZIP was reconstructed, not recovered.
+
+All six cases run on pushes to main and manual workflow runs; pull requests run the unit/build checks.
+Packaging checks source and output hashes against the last successful validation receipt.
+Any later code, configuration or evidence change requires validation again.
 

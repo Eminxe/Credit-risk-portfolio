@@ -103,7 +103,8 @@ def main():
         "model_sha256":sha256(OUTPUTS/"case04_response_model.joblib"),
         "caveat":"Source row order is documented chronological, but exact dates and customer IDs are unavailable. Response among contacted clients is not treatment uplift; net values are scenario proxies.",
     })
-    print("Case 04 complete",candidates[-1],flush=True)
+    selected_result = next(row for row in candidates if row["model"] == selected and row["split"] == "ordered_holdout")
+    print("Case 04 complete", selected_result, flush=True)
 
 
 if __name__=="__main__":
