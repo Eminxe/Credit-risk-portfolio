@@ -13,16 +13,16 @@ population stability and vintages, and measure incremental effects with a random
 It uses no private Plata data, and every monetary result is a declared scenario, not observed bank profit.
 
 **Read first:** [Portfolio overview](PORTFOLIO_EN.md) · [Executed notebook](notebooks/01_06_casebook.ipynb) ·
-[HTML casebook](outputs/casebook.html) · [Разбор на русском](РАЗБОР_RU.md)
+[HTML casebook](outputs/casebook.html) · [Разбор на русском](РАЗБОР_RU.md) · [Подготовка к интервью](docs/INTERVIEW_PREP_RU.md)
 
 ## Results at a glance
 
 | # | Business question | Data | Method | Key result |
 |---|---|---|---|---|
-| 01 | Who will miss next month's card payment? | UCI Taiwan credit cards, 30,000 clients | Calibrated logistic regression vs gradient boosting, grouped nested CV, untouched holdout, WoE/IV, PSI | Holdout **ROC-AUC 0.782** (95% CI 0.767–0.797), **Gini 0.564**, Brier 0.135 |
+| 01 | Who will miss next month's card payment? | UCI Taiwan credit cards, 30,000 clients | Calibrated logistic regression vs gradient boosting, grouped nested CV, untouched holdout, WoE/IV, PSI | Holdout **ROC-AUC 0.782** (95% CI 0.767–0.797), **Gini 0.564**, Brier 0.135; top IV: last repayment status 0.89; score PSI 0.005 |
 | 02 | What does that risk cost? | Case 01 scores | Monthly survival cash flows, EL = PD × LGD × EAD, sensitivity grid, EL by risk decile | Base scenario **NPV −723.8 M TWD**, EL 884.7 M TWD: the declared pricing does not cover risk |
 | 03 | Which credit limit for each client? | Case 01–02 outputs | Discrete Lagrangian optimisation under a loss budget, dual bound | Lower limits improve scenario NPV by **+195.2 M TWD**; budget constraint is slack |
-| 04 | Whom should a campaign call? | UCI Bank Marketing, 45,211 calls | Time-ordered train/validation/holdout, leakage removal, PSI drift report | Later-period **AUC 0.592**: an honest model-drift finding, not a deployment |
+| 04 | Whom should a campaign call? | UCI Bank Marketing, 45,211 calls | Time-ordered train/validation/holdout, leakage removal, PSI drift report | Later-period **AUC 0.592**; PSI 0.96 / 0.80 / 0.72 on prior-campaign fields explains the drift |
 | 05 | Does an email actually increase sales? | Hillstrom randomized test, 64,000 customers | Intent-to-treat, Welch CIs, Holm correction, balance checks | Men's email **+0.68 pp conversion**, **+$0.77 spend/customer** |
 | 06 | How do loan vintages perform? | LendingClub 2007–2011, 39,786 loans | Vintage and grade analysis with coverage rules; tested roll-rate function | **14.25%** terminal charge-off rate; grade A 6.0% → grade G 31.8% |
 

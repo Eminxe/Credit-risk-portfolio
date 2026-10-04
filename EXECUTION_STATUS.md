@@ -68,3 +68,12 @@ SQL load/idempotence, notebook execution and authenticated Jupyter checks. The f
 contains 30,000 rows in each core table and 138 aggregate rows. Artifact verified-case-outputs
 was uploaded (8,846,324 bytes). See CI_RESULT.md for the artifact digest and expiry.
 Earlier local-only/pending publication notes above describe the previous state and are superseded.
+
+## Scorecard diagnostics — 2026-10-04
+
+Added WoE/IV, PSI and EL-by-decile outputs. [GitHub Actions run 37200959193](https://github.com/Eminxe/Credit-risk-portfolio/actions/runs/37200959193)
+(commit 02d5c4b) downloaded all sources afresh, ran the six cases and passed reconciliation, SQL,
+notebook, Jupyter and packaging checks. The five new CSVs in outputs/ (case01_information_value,
+case01_woe_bins, case01_stability, case02_el_by_decile, case04_stability) are copied from that run's
+log; their EL and NPV totals match the committed Case 02 manifest. Other committed outputs remain
+from the 2026-10-01 local run; rerun `make validate` to regenerate the notebook and HTML reports.
