@@ -45,3 +45,8 @@ pytest-cache-files-*/
 !outputs/validation_run.json
 !outputs/verification.json
 !outputs/verification_additional.json
+!outputs/case01_information_value.csv
+!outputs/case01_stability.csv
+!outputs/case01_woe_bins.csv
+!outputs/case02_el_by_decile.csv
+!outputs/case04_stability.csv

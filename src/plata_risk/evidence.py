@@ -3,11 +3,12 @@ import json
 from pathlib import Path
 from plata_risk.common import sha256
 
-SOURCE_DIRS = {".devcontainer", ".github", ".vscode", "cases", "configs", "docker",
+SOURCE_DIRS = {".devcontainer", ".github", ".vscode", "cases", "configs", "docker", "docs",
                "scripts", "sql", "src", "tests"}
 ROOT_FILES = {".dockerignore", ".env.example", ".gitattributes", ".gitignore",
-              "Dockerfile", "Makefile", "pyproject.toml", "requirements-linux.lock"}
-SOURCE_SUFFIXES = {".py", ".sh", ".ps1", ".json", ".sql", ".yaml", ".yml", ".toml"}
+              "Dockerfile", "LICENSE", "Makefile", "pyproject.toml", "requirements-linux.lock"}
+SOURCE_SUFFIXES = {".py", ".sh", ".ps1", ".json", ".sql", ".yaml", ".yml", ".toml", ".md",
+                   ".png"}
 OUTPUT_SUFFIXES = {".csv", ".json", ".html", ".png", ".parquet", ".joblib"}
 
 

@@ -1,7 +1,7 @@
 # Continuation runbook
 
-1. Read README.md, EXECUTION_STATUS.md and CI_RESULT.md. This is a reconstruction.
-2. Inspect `git status` and preserve existing user changes. Do not alter synced parent `sources/`.
+1. Read README.md, EXECUTION_STATUS.md and CI_RESULT.md.
+2. Inspect `git status` and preserve existing local changes.
 3. Obtain a functioning Docker Desktop Linux engine/WSL2 session if unavailable. Do not
    misinterpret installed CLI binaries as a running engine. Avoid reinstalling registered Ubuntu.
 4. Run `bash scripts/bootstrap.sh`, or `.\scripts\run_local.ps1 -Task setup` in PowerShell.

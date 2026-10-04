@@ -22,6 +22,8 @@ out-of-fold log loss before evaluating the reserved 6,006-record holdout.
 
 The selected AUC has a group-bootstrap 95% interval of **0.7669–0.7965** (500 draws;
 conditional on the fitted model). Subgroup diagnostics are included, without a fairness certification.
+Standard scorecard diagnostics accompany the model: Weight of Evidence bins and Information Value
+per feature (development rows only) and a Population Stability Index for the score and every input.
 This is grouped random validation on historical data. It cannot establish future-period or Plata performance.
 
 ## 02 — Risk-to-NPV scenario engine
@@ -32,7 +34,9 @@ for reserved customers. This is a research portfolio, not a single production sc
 
 The original 12-month scenario uses 24% annual interest, 8% funding, 12% discounting,
 40% utilization, 60% LGD, monthly servicing of 30 TWD and acquisition cost of 500 TWD.
-Its NPV is **−723.84 million TWD**. A one-month existing-account comparison with zero acquisition
+Its NPV is **−723.84 million TWD** and 12-month expected loss (PD × LGD × EAD) is **884.70 million TWD**.
+An EL-by-risk-decile table shows the EL rate of exposure rising from 24% to 60% across deciles, while
+total EL stays roughly even (8–11% per decile) because higher-risk clients hold smaller limits. A one-month existing-account comparison with zero acquisition
 cost gives **−185.77 million TWD**. Neither value is observed profit or an investment forecast.
 One-month default payment is not validated as a constant multi-month loss hazard.
 
@@ -53,7 +57,8 @@ training/validation/holdout design and expanding-window calibration.
 
 The selected model's later-holdout AUC is **0.5923**, Brier **0.2689** and log loss **0.8399**.
 A development-prevalence baseline has log loss **0.8994**. These results show limited ranking
-and substantial probability error; they do not justify deployment.
+and substantial probability error; they do not justify deployment. A PSI report compares every
+retained input and the score between the development and later holdout windows.
 EUR response-value/contact-cost assumptions give retrospective proxies, not incremental campaign ROI.
 No no-contact control is available in this source.
 
@@ -82,7 +87,7 @@ function for future account-month data; it does not invent missing historical tr
 
 ## Engineering and review evidence
 
-Python 3.12, Docker Compose, PostgreSQL 16, executed Jupyter notebook, 19 passing unit tests,
+Python 3.12, Docker Compose, PostgreSQL 16, executed Jupyter notebook, 25 unit tests,
 independent source reconciliation and idempotent SQL loads. The pipeline preserves data receipts,
 SHA-256 lineage and explicit assumptions. Image digests and Python package versions are pinned.
 Full remote CI passed on 2026-10-02 (GitHub Actions run 37004011370); all six studies and infrastructure checks succeeded.

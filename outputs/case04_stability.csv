@@ -1,0 +1,13 @@
+variable,psi,status
+poutcome,0.9623198664866316,significant shift
+previous,0.8037821857005115,significant shift
+pdays,0.720351202695408,significant shift
+job,0.1753991076909349,moderate shift
+age,0.15598337577308588,moderate shift
+score,0.07629951990528894,stable
+loan,0.07062464011481576,stable
+balance,0.06302031843916582,stable
+marital,0.048883929626327656,stable
+housing,0.044496609677971304,stable
+default,0.027224453841241007,stable
+education,0.014460918209344718,stable

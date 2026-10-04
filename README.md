@@ -1,101 +1,109 @@
-# Credit-risk-portfolio
+# Credit Risk Analytics Portfolio
 
-Credit risk analytics portfolio by Emin Salavatov. Independent case studies for a Risk Analyst application at Banco Plata.
+[![validate](https://github.com/Eminxe/Credit-risk-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/Eminxe/Credit-risk-portfolio/actions/workflows/ci.yml)
+![Python 3.12](https://img.shields.io/badge/python-3.12-blue)
+![License: MIT](https://img.shields.io/badge/license-MIT-green)
 
+**Emin Salavatov** · six reproducible risk-analytics case studies on public data, prepared for a
+Risk Analyst application at [Plata](https://plata.mx) (Mexico).
 
-Six reproducible public-data studies for a risk/data analytics portfolio. This independent
-research project uses no private Plata data and claims no production deployment or measured bank profit.
+The project covers the core loop of consumer-credit risk work: build and validate a probability-of-default
+(PD) model, turn PD into expected loss and unit economics, set limits under a loss budget, monitor
+population stability and vintages, and measure incremental effects with a randomized experiment.
+It uses no private Plata data, and every monetary result is a declared scenario, not observed bank profit.
 
-Start with [Portfolio overview](PORTFOLIO_EN.md), the executed
-[English notebook](notebooks/01_06_casebook.ipynb), or the self-contained
-[HTML casebook](outputs/casebook.html). Russian explanation: [РАЗБОР_RU.md](РАЗБОР_RU.md).
+**Read first:** [Portfolio overview](PORTFOLIO_EN.md) · [Executed notebook](notebooks/01_06_casebook.ipynb) ·
+[HTML casebook](outputs/casebook.html) · [Разбор на русском](РАЗБОР_RU.md) · [Подготовка к интервью](docs/INTERVIEW_PREP_RU.md)
 
-| Case | Question | Evidence |
-|---|---|---|
-| 01 | Predict next-month default payment | UCI, 30,000 clients; grouped nested calibration and holdout |
-| 02 | Translate risk into cash-flow scenarios | Explicit TWD assumptions; independent formula reconciliation |
-| 03 | Choose limits under a loss budget | Discrete candidate grid; feasible solution and dual bound |
-| 04 | Rank campaign response | UCI Bank Marketing; ordered validation/holdout; drift limitation |
-| 05 | Estimate incremental email effects | Hillstrom randomized no-email control; uncertainty and Holm correction |
-| 06 | Monitor vintage outcomes | Original LendingClub snapshot; terminal outcomes, not roll rates |
+## Results at a glance
 
-## Verified on GitHub
+| # | Business question | Data | Method | Key result |
+|---|---|---|---|---|
+| 01 | Who will miss next month's card payment? | UCI Taiwan credit cards, 30,000 clients | Calibrated logistic regression vs gradient boosting, grouped nested CV, untouched holdout, WoE/IV, PSI | Holdout **ROC-AUC 0.782** (95% CI 0.767–0.797), **Gini 0.564**, Brier 0.135; top IV: last repayment status 0.89; score PSI 0.005 |
+| 02 | What does that risk cost? | Case 01 scores | Monthly survival cash flows, EL = PD × LGD × EAD, sensitivity grid, EL by risk decile | Base scenario **NPV −723.8 M TWD**, EL 884.7 M TWD: the declared pricing does not cover risk |
+| 03 | Which credit limit for each client? | Case 01–02 outputs | Discrete Lagrangian optimisation under a loss budget, dual bound | Lower limits improve scenario NPV by **+195.2 M TWD**; budget constraint is slack |
+| 04 | Whom should a campaign call? | UCI Bank Marketing, 45,211 calls | Time-ordered train/validation/holdout, leakage removal, PSI drift report | Later-period **AUC 0.592**; PSI 0.96 / 0.80 / 0.72 on prior-campaign fields explains the drift |
+| 05 | Does an email actually increase sales? | Hillstrom randomized test, 64,000 customers | Intent-to-treat, Welch CIs, Holm correction, balance checks | Men's email **+0.68 pp conversion**, **+$0.77 spend/customer** |
+| 06 | How do loan vintages perform? | LendingClub 2007–2011, 39,786 loans | Vintage and grade analysis with coverage rules; tested roll-rate function | **14.25%** terminal charge-off rate; grade A 6.0% → grade G 31.8% |
 
-[Full validation run](https://github.com/Eminxe/Credit-risk-portfolio/actions/runs/37004011370) passed on 2026-10-02: all six studies,
-16 tests, independent reconciliation, PostgreSQL, executed notebook and authenticated Jupyter.
-See [CI evidence](CI_RESULT.md) for the tested commit and downloadable results.
+<table>
+<tr>
+<td><img src="docs/figures/case01_default_by_decile.png" alt="Holdout default rate by predicted-risk decile"></td>
+<td><img src="docs/figures/case01_calibration.png" alt="Holdout calibration curve"></td>
+</tr>
+<tr>
+<td><img src="docs/figures/case06_vintages.png" alt="LendingClub charge-off rate by vintage"></td>
+<td><img src="docs/figures/case05_conversion_effect.png" alt="Randomized email conversion effects"></td>
+</tr>
+</table>
 
-## Reproduce
+## Skills demonstrated
 
-Docker-only setup (no host Python installation required):
+| Area | Where |
+|---|---|
+| PD modelling, calibration, ROC-AUC / Gini / KS / Brier, risk deciles | Case 01 · `src/plata_risk/credit.py` |
+| Scorecard diagnostics: Weight of Evidence, Information Value, PSI | Cases 01, 04 · `src/plata_risk/scorecard.py` |
+| Leakage control: grouped splits, nested calibration, excluded post-event fields | Cases 01, 04 |
+| Expected loss, LGD / EAD, discounted cash flows, break-even PD | Case 02 · `src/plata_risk/economics.py` |
+| Constrained optimisation of credit limits | Case 03 |
+| Experiment analysis: ITT, confidence intervals, multiple testing | Case 05 · `src/plata_risk/experiment.py` |
+| Portfolio monitoring: vintages, grade mix, roll rates | Case 06 · `src/plata_risk/portfolio.py` |
+| SQL, PostgreSQL, Docker, CI, unit tests, reproducibility | `sql/`, `docker/`, `.github/`, `tests/` |
 
-```powershell
-.\scripts\run_local.ps1 -Task setup
-.\scripts\run_local.ps1 -Task pipeline
-.\scripts\run_local.ps1 -Task validate
-.\scripts\run_local.ps1 -Task jupyter
-.\scripts\run_local.ps1 -Task package
+## Quick start
+
+Requires Docker Desktop (Linux containers). Python 3.12 runs inside the container.
+
+```bash
+bash scripts/bootstrap.sh          # Linux / WSL: creates .env and builds the image
+make pipeline                      # downloads public sources and runs all six cases
+make validate                      # tests, reconciliation, SQL load, notebook execution
+make jupyter                       # JupyterLab on http://localhost:8888 (token in .env)
 ```
 
-On Linux/WSL, use `bash scripts/bootstrap.sh`, then `make pipeline validate jupyter package`.
-Complete setup before choosing **Dev Containers: Reopen in Container**.
-The equivalent individual commands below are useful if host Python is already available:
+On Windows PowerShell use `.\scripts\run_local.ps1 -Task setup|pipeline|validate|jupyter|package`.
+Single cases: `make case01` … `make case06`. Without Docker, with Python 3.12:
 
-Docker Desktop with Linux containers is required. Run from this repository in PowerShell
-or a Linux terminal. Python 3.12 runs inside the container; the Ubuntu system interpreter
-does not need to be replaced.
+```bash
+pip install -r requirements-linux.lock && pip install --no-deps -e '.[dev]'
+pytest -q && python scripts/run_pipeline.py
+```
+
+## Repository layout
 
 ```text
-python scripts/init_env.py
-docker compose build analytics
-docker compose up -d --wait postgres
-docker compose run --rm analytics python scripts/run_pipeline.py
-docker compose run --rm analytics python scripts/validate_project.py
-docker compose up -d --wait jupyter
+cases/            six executable studies (case01 … case06)
+src/plata_risk/   data loaders, scoring, scorecard diagnostics, economics, statistics, plots
+configs/          every financial and analytical assumption, in YAML
+scripts/          pipeline, independent verification, SQL loaders, notebook build, packaging
+sql/, docker/     PostgreSQL schema and portfolio summary queries
+tests/            unit tests with hand-checked formulas and edge cases
+notebooks/        executed English casebook
+outputs/          published aggregate evidence (raw data, row-level scores and models are not committed)
+docs/figures/     key charts from the validated run
 ```
 
-Open http://localhost:8888 and use the locally generated JUPYTER_TOKEN from .env.
-PostgreSQL is bound to localhost:5433. Never include .env in a portfolio archive.
-The project has digest-pinned base images and a tested requirements-linux.lock.
-VS Code: open this folder and choose **Dev Containers: Reopen in Container** to use
-the same Python 3.12 environment. The Dev Containers configuration is included.
-First execution downloads public sources; caches are validated against stored SHA-256 receipts.
-Upstream availability is required when caches are absent.
+## Validation
 
-The pipeline fails instead of substituting generated data. Validation checks model metrics,
-source labels, cross-case IDs, economics, experimental contrasts, vintage aggregation, SQL
-row counts/idempotence and notebook execution. Unit fixtures are never analysis inputs.
+GitHub Actions runs lint, unit tests and the Docker build on every push. On `main` and on manual
+runs it also downloads all sources afresh, executes the six cases, reconciles every output against
+an independent calculation, loads PostgreSQL twice to prove idempotence, executes the notebook and
+uploads the evidence. The last full run is documented in [CI_RESULT.md](CI_RESULT.md).
+Source data are cached with SHA-256 receipts; the pipeline fails rather than substituting synthetic data.
 
-## Layout
+## Data sources and limitations
 
-- cases/: six executable studies.
-- src/plata_risk/: data access, transforms, scoring, economics, statistics and plotting.
-- configs/: explicit financial and analytical assumptions.
-- scripts/: orchestration, validation, SQL loaders, notebook export and packaging.
-- docker/postgres/init.sql: all core and aggregate tables. The additional loader also creates
-  its tables idempotently for pre-existing database volumes.
-- outputs/: locally generated evidence, manifests, model artifacts and HTML.
-- tests/: methodological edge cases and independent formula checks.
-- RUNBOOK.md: continuation instructions; EXECUTION_STATUS.md: actual execution status.
+- [UCI Default of Credit Card Clients](https://doi.org/10.24432/C55S3H) and
+  [UCI Bank Marketing](https://doi.org/10.24432/C5K306), CC BY 4.0.
+- [Hillstrom MineThatData e-mail challenge](https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html)
+  and the [original LendingClub LoanStats3a archive](https://resources.lendingclub.com/LoanStats3a.csv.zip):
+  no redistribution licence is established, so raw files are never committed.
 
-Cases 01–03 share UCI credit IDs and hashed predecessor files. Cases 04–06 are independent
-populations, never joined to those IDs. Joblib artifacts are executable Python serialization:
-load only this project's trusted local models.
+Case 01 uses grouped random validation on 2005 Taiwanese data, so it is not an out-of-time or
+regulatory (IFRS 9 / CNBV) PD. LGD, utilisation, prices and the limit-response elasticity are
+scenario assumptions in `configs/`, not measured bank parameters. Cases 04–06 are separate
+populations and are never joined to Case 01 clients. Further details: [STRUCTURE.md](STRUCTURE.md),
+[RUNBOOK.md](RUNBOOK.md), [EXECUTION_STATUS.md](EXECUTION_STATUS.md).
 
-## Sources and limitations
-
-[UCI credit](https://doi.org/10.24432/C55S3H) and
-[UCI marketing](https://doi.org/10.24432/C5K306) are CC BY 4.0;
-[Hillstrom](https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html)
-and [LendingClub archive](https://resources.lendingclub.com/LoanStats3a.csv.zip)
-have source receipts but no established redistribution license in this project.
-The deliverable excludes raw datasets. Historical UCI scores are not regulatory default
-probabilities; scenario LGD, prices and limit response are not measured bank parameters.
-
-CI configuration is included. See the repository Actions tab for remote run results.
-Local execution does not count as a remote CI pass. The original unavailable ZIP was reconstructed, not recovered.
-
-All six cases run on pushes to main and manual workflow runs; pull requests run the unit/build checks.
-Packaging checks source and output hashes against the last successful validation receipt.
-Any later code, configuration or evidence change requires validation again.
-
+This project was developed with AI coding assistance; the inspectable code, tests and stated
+limitations are the evidence. Code is released under the [MIT License](LICENSE); data remain under their own terms.

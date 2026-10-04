@@ -35,6 +35,11 @@ for row in pd.read_csv(OUTPUTS / "case04_policies.csv").itertuples():
     assert np.isclose(row.retrospective_net_proxy_eur,
                       part.observed_subscription.sum()*s["value_per_subscription"]-len(part)*s["cost_per_contact"])
 
+stability = pd.read_csv(OUTPUTS / "case04_stability.csv")
+assert set(stability.variable) == {"score", *bank.drop(columns=manifest["excluded_predictors"]).columns}
+assert (stability.psi >= 0).all()
+assert np.isclose(stability.loc[stability.variable == "score", "psi"].iloc[0], manifest["score_psi"])
+
 hill, _ = load_hillstrom()
 control = hill[hill.segment == "No E-Mail"]
 effects = pd.read_csv(OUTPUTS / "case05_ate.csv")
