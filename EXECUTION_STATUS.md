@@ -2,19 +2,17 @@
 
 ## Verified locally
 
-- Working copy: Desktop/Plata/plata-risk-casebook. Parent sources/ remained read-only.
 - WSL2 Ubuntu and Docker Desktop Linux engine 29.8.0 are running.
 - Python 3.12 analytical Docker image built successfully, including a second build from
   requirements-linux.lock with a pinned Python base digest.
 - PostgreSQL 16.15 is healthy; its image digest is pinned.
 - JupyterLab is healthy and an authenticated /api/status request returned HTTP 200.
   A startup filename that shadowed the jupyter_server package was fixed.
-- VS Code extensions installed: Python, Jupyter, WSL, Codex and Dev Containers.
-  The devcontainer configuration selects container Python 3.12; opening that editor session
-  and interactive Codex sign-in are user actions, not verified by installation.
+- VS Code extensions installed: Python, Jupyter, WSL and Dev Containers.
+  The devcontainer configuration selects container Python 3.12.
 - Ubuntu's system Python is 3.14.4 and Git is 2.53.0. System Python was preserved.
 - All six real-data cases executed successfully. No synthetic analysis outputs.
-- Ruff passed; 16 unit tests passed.
+- Ruff passed; 16 unit tests passed (the suite has since grown; see CI for the current count).
 - Independent source and arithmetic checks passed for all six cases.
 - SQL loaded 30,000 records into each core table. Current additional-case versions have
   138 aggregate records in total; earlier versions are retained separately.

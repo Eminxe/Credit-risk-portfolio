@@ -49,10 +49,21 @@ assert limits.expected_loss_twd.sum() <= third["budget_twd"] + 1e-5
 assert third["dual_upper_bound_twd"] + 1e-5 >= limits.npv_twd.sum()
 assert second["npv_sha256"] == sha256(OUTPUTS / "case02_customer_npv.parquet")
 assert third["strategy_sha256"] == sha256(OUTPUTS / "case03_limit_strategy.parquet")
+el = pd.read_csv(OUTPUTS / "case02_el_by_decile.csv")
+assert el.customers.sum() == len(scores)
+assert np.isclose(el.expected_loss_twd.sum(), second["total_expected_loss_twd"])
+assert np.isclose(el.npv_twd.sum(), second["total_npv_twd"])
+assert el.mean_pd_1m.is_monotonic_increasing
+iv = pd.read_csv(OUTPUTS / "case01_information_value.csv")
+stability = pd.read_csv(OUTPUTS / "case01_stability.csv")
+assert (iv.iv >= 0).all() and iv.feature.is_unique
+assert {"score_pd_1m", *iv.feature} == set(stability.variable)
+assert (stability.psi >= 0).all()
 write_json(OUTPUTS / "verification.json", {
     "status": "passed", "verified_at": timestamp(), "rows": len(scores),
     "checks": ["source IDs and default count", "feature-group split isolation", "holdout AUC and Brier",
                "decile totals", "cross-case customer IDs", "expected loss formula",
-               "portfolio sums", "risk budget feasibility", "dual bound", "artifact hashes"],
+               "portfolio sums", "risk budget feasibility", "dual bound", "artifact hashes",
+               "EL by decile totals", "IV and PSI coverage"],
 })
 print("Real-data artifacts verified: 30,000 customers; all reconciliation checks passed")

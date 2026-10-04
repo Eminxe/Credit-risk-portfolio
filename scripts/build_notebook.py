@@ -71,6 +71,20 @@ nb.cells = [
        "creates ten near-equal-count bins; observed default rates remain holdout-only."),
     code("display(pd.read_csv(OUTPUTS / 'case01_risk_deciles.csv').round(4))\n"
          "display(Image(filename=str(OUTPUTS / 'case01_default_by_decile.png')))"),
+    md("### Scorecard diagnostics: Information Value and stability\n\n"
+       "Information Value (IV) summarizes each engineered feature's univariate separation on "
+       "development rows only, using Weight of Evidence bins. Conventional reading: below 0.02 not "
+       "predictive, 0.1–0.3 medium, above 0.5 worth a leakage check. The Population Stability Index "
+       "(PSI) compares holdout with development distributions: below 0.1 stable, above 0.25 a "
+       "significant shift. Because this split is random, low PSI is expected; the same report on an "
+       "out-of-time sample is the production monitoring use case (see Case 04 for real drift)."),
+    code("display(pd.read_csv(OUTPUTS / 'case01_information_value.csv').round(4))\n"
+         "display(pd.read_csv(OUTPUTS / 'case01_stability.csv').round(4))"),
+    md("### Expected loss by risk decile\n\n"
+       "EL = PD(12 months) × LGD × EAD under the declared scenario. The table shows how loss "
+       "concentrates in the highest predicted-risk deciles, which is the usual starting point for "
+       "cut-off, pricing and limit discussions."),
+    code("display(pd.read_csv(OUTPUTS / 'case02_el_by_decile.csv').round(4))"),
     md("### Scenario economics and limit strategy\n\n"
        "The monetary sensitivity table varies assumptions; it is not a confidence interval. "
        "A negative NPV is retained as a finding under the assumptions, without changing rates "
@@ -100,11 +114,13 @@ nb.cells.extend([
        "The final 20% in source date order is held out. Model selection uses the preceding 20%; "
        "calibration uses expanding windows with matching-feature groups removed from training. "
        "Duration and current-campaign fields are excluded. Customer IDs and exact dates are unavailable. "
-       "The selected model shows weak ranking and substantial probability drift on the later holdout. "
+       "The selected model shows weak ranking and substantial probability drift on the later holdout; "
+       "the PSI table quantifies which inputs shifted between the development and holdout windows. "
        "This is a limitation to investigate, not a deployment recommendation. Historical response "
        "among contacted customers cannot identify incremental campaign uplift. EUR economics is illustrative."),
     code("display(pd.read_csv(OUTPUTS / 'case04_metrics.csv'))\n"
          "display(pd.read_csv(OUTPUTS / 'case04_policies.csv'))\n"
+         "display(pd.read_csv(OUTPUTS / 'case04_stability.csv').round(4))\n"
          "display(Image(filename=str(OUTPUTS / 'case04_policy_response.png')))"),
     md("## Case 05 — Randomized email experiment\n\n"
        "[Hillstrom research challenge](https://blog.minethatdata.com/2008/03/minethatdata-e-mail-analytics-and-data.html), "

@@ -89,6 +89,12 @@ def main():
     plt.xlabel("Observed subscription rate among selected holdout records (%)")
     plt.title("UCI Bank Marketing | Response ranking, not causal uplift")
     save("case04_policy_response.png")
+    from plata_risk.scorecard import stability_report
+    # PSI of the later holdout against the development window explains the weak holdout AUC.
+    reference = x.iloc[dev].reset_index(drop=True).assign(score=model.predict_proba(x.iloc[dev])[:,1])
+    current = x.iloc[hold].reset_index(drop=True).assign(score=p)
+    stability = stability_report(reference, current, ["score", *x.columns])
+    stability.to_csv(OUTPUTS/"case04_stability.csv",index=False)
     joblib.dump(model,OUTPUTS/"case04_response_model.joblib")
     write_json(OUTPUTS/"case04_manifest.json",{
         "status":"success","finished_at":timestamp(),"source":source,"source_rows":len(frame),
@@ -98,6 +104,8 @@ def main():
         "development_subscription_rate":float(y.iloc[dev].mean()),
         "holdout_subscription_rate":float(y.iloc[hold].mean()),
         "selected_model":selected,"excluded_predictors":EXCLUDED,"assumptions":s,
+        "max_feature_psi":float(stability.loc[stability.variable!="score","psi"].max()),
+        "score_psi":float(stability.loc[stability.variable=="score","psi"].iloc[0]),
         "selection":"Ordered validation log loss before final ordered holdout",
         "results_sha256":sha256(OUTPUTS/"case04_holdout_scores.csv"),
         "model_sha256":sha256(OUTPUTS/"case04_response_model.joblib"),

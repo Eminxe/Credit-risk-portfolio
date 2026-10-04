@@ -16,6 +16,17 @@ def main():
     result["break_even_pd_1m"] = break_even_pd(scores.LIMIT_BAL, s)
     result["positive_npv_scenario"] = result.npv_twd >= 0
     result.to_parquet(OUTPUTS / "case02_customer_npv.parquet", index=False)
+    # Bank-style expected-loss view: EL = PD(horizon) x LGD x EAD by predicted-risk decile.
+    result["risk_decile"] = pd.qcut(result.pd_1m.rank(method="first"), 10, labels=False) + 1
+    el = result.groupby("risk_decile").agg(
+        customers=("customer_id", "size"), mean_pd_1m=("pd_1m", "mean"),
+        mean_pd_horizon=("pd_horizon", "mean"), ead_twd=("ead_twd", "sum"),
+        expected_loss_twd=("expected_loss_twd", "sum"), npv_twd=("npv_twd", "sum"),
+        positive_npv_customers=("positive_npv_scenario", "sum")).reset_index()
+    el["el_rate_of_ead"] = el.expected_loss_twd / el.ead_twd
+    el["share_of_total_el"] = el.expected_loss_twd / el.expected_loss_twd.sum()
+    el.to_csv(OUTPUTS / "case02_el_by_decile.csv", index=False)
+    result = result.drop(columns="risk_decile")
     summary = {"status": "success", "finished_at": timestamp(), "assumptions": s,
                "case01_scores_sha256": manifest["scores_sha256"],
                "scenario_sha256": sha256(ROOT / "configs/scenarios.yaml"),

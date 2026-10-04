@@ -63,6 +63,15 @@ def main():
     pd.DataFrame({"customer_id": df.iloc[hold].customer_id.to_numpy(),
                   "observed_default": y.iloc[hold].to_numpy(), **hold_predictions}).to_csv(
         OUTPUTS / "case01_holdout_predictions.csv", index=False)
+    from plata_risk.scorecard import information_values, stability_report
+    # Scorecard diagnostics use development rows only for IV; PSI compares holdout to development.
+    iv, woe = information_values(xd, yd)
+    iv.to_csv(OUTPUTS / "case01_information_value.csv", index=False)
+    woe.to_csv(OUTPUTS / "case01_woe_bins.csv", index=False)
+    reference = xd.assign(score_pd_1m=oof[selected])
+    current = x.iloc[hold].reset_index(drop=True).assign(score_pd_1m=hold_predictions[selected])
+    stability_report(reference, current, ["score_pd_1m", *x.columns]).to_csv(
+        OUTPUTS / "case01_stability.csv", index=False)
     deciles = risk_deciles(y.iloc[hold], hold_predictions[selected])
     deciles.to_csv(OUTPUTS / "case01_risk_deciles.csv", index=False)
     audit = {"rows": len(df), "source_features": 23, "missing_cells": int(df.isna().sum().sum()),
