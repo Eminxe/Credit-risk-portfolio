@@ -35,6 +35,11 @@ jobs:
       - run: docker compose up -d --wait postgres
       - run: docker compose run --rm analytics python scripts/run_pipeline.py
       - run: docker compose run --rm analytics python scripts/validate_project.py
+      - name: Print scorecard and expected-loss diagnostics
+        run: |
+          for f in case01_information_value case01_stability case01_woe_bins case02_el_by_decile case04_stability; do
+            echo "=== $f.csv"; cat "outputs/$f.csv"
+          done
       - run: docker compose up -d --wait jupyter
       - run: docker compose exec -T jupyter python scripts/healthcheck.py
       - run: docker compose run --rm analytics python scripts/package_portfolio.py
