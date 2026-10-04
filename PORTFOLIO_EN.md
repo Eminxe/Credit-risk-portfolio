@@ -35,7 +35,8 @@ for reserved customers. This is a research portfolio, not a single production sc
 The original 12-month scenario uses 24% annual interest, 8% funding, 12% discounting,
 40% utilization, 60% LGD, monthly servicing of 30 TWD and acquisition cost of 500 TWD.
 Its NPV is **−723.84 million TWD** and 12-month expected loss (PD × LGD × EAD) is **884.70 million TWD**.
-An EL-by-risk-decile table shows how loss concentrates in the highest predicted-risk deciles. A one-month existing-account comparison with zero acquisition
+An EL-by-risk-decile table shows the EL rate of exposure rising from 24% to 60% across deciles, while
+total EL stays roughly even (8–11% per decile) because higher-risk clients hold smaller limits. A one-month existing-account comparison with zero acquisition
 cost gives **−185.77 million TWD**. Neither value is observed profit or an investment forecast.
 One-month default payment is not validated as a constant multi-month loss hazard.
 

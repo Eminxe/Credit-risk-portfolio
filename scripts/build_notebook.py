@@ -81,9 +81,10 @@ nb.cells = [
     code("display(pd.read_csv(OUTPUTS / 'case01_information_value.csv').round(4))\n"
          "display(pd.read_csv(OUTPUTS / 'case01_stability.csv').round(4))"),
     md("### Expected loss by risk decile\n\n"
-       "EL = PD(12 months) × LGD × EAD under the declared scenario. The table shows how loss "
-       "concentrates in the highest predicted-risk deciles, which is the usual starting point for "
-       "cut-off, pricing and limit discussions."),
+       "EL = PD(12 months) × LGD × EAD under the declared scenario. The EL rate of exposure rises "
+       "with predicted risk, while total EL per decile depends also on exposure: higher-risk clients "
+       "hold smaller limits. This view is the usual starting point for cut-off, pricing and limit "
+       "discussions."),
     code("display(pd.read_csv(OUTPUTS / 'case02_el_by_decile.csv').round(4))"),
     md("### Scenario economics and limit strategy\n\n"
        "The monetary sensitivity table varies assumptions; it is not a confidence interval. "

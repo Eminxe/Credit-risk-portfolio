@@ -40,6 +40,8 @@ def test_psi_zero_for_identical_and_large_for_shifted():
 
 def test_psi_handles_categories_missing_from_reference():
     assert psi(["a"] * 50 + ["b"] * 50, ["a"] * 50 + ["c"] * 50) > .25
+    # A category absent from the reference must still register as a shift.
+    assert psi(["a"] * 100, ["a"] * 50 + ["c"] * 50) > .25
 
 
 def test_iv_strength_thresholds():

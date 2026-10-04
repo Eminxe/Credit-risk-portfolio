@@ -80,8 +80,15 @@ def psi(expected, actual, bins=10):
     """Population Stability Index of `actual` against bins fixed on `expected`."""
     if len(expected) == 0 or len(actual) == 0:
         raise ValueError("PSI requires two nonempty samples")
-    expected_bins, labels = _bin(expected, expected, bins)
-    actual_bins, _ = _bin(expected, actual, bins)
+    if _is_categorical(expected, bins):
+        # Categories seen only in the current sample keep their own bin, so new values count.
+        union = pd.concat([pd.Series(expected).astype(str), pd.Series(actual).astype(str)])
+        labels = sorted(set(union))
+        expected_bins = pd.Categorical(pd.Series(expected).astype(str), categories=labels)
+        actual_bins = pd.Categorical(pd.Series(actual).astype(str), categories=labels)
+    else:
+        expected_bins, labels = _bin(expected, expected, bins)
+        actual_bins, _ = _bin(expected, actual, bins)
     e = pd.Series(expected_bins).value_counts().reindex(labels, fill_value=0)
     a = pd.Series(actual_bins).value_counts().reindex(labels, fill_value=0)
     e_share, a_share = _shares(e), _shares(a)
