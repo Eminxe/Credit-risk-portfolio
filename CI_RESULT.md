@@ -1,5 +1,20 @@
 # Verified GitHub execution
 
+## Latest full run — 2026-10-04
+
+- Tested commit on main: [a2d1987](https://github.com/Eminxe/Credit-risk-portfolio/commit/a2d19873789f0059072dcf2501b698ad325f96ee)
+  (scorecard diagnostics, EL by decile, interview guide).
+- [Full real-data validation, run 37201790482](https://github.com/Eminxe/Credit-risk-portfolio/actions/runs/37201790482): success.
+- Checks: Ruff, 25 unit tests, Docker build, PostgreSQL 16, all six real-source pipelines,
+  independent reconciliation including the new IV/PSI/EL outputs, SQL load and idempotence,
+  executed notebook, authenticated Jupyter and the validated portfolio archive.
+- Artifact **verified-case-outputs**: ID 11302942803, 8,878,140 bytes,
+  SHA-256 ef5b51d3651a3692c3a10d093ce2bd22e4f365d17b7a1771f702348b885d3564, expires 2027-01-02.
+
+Every later push to main repeats the full run; the Actions tab shows the newest result.
+
+## First published run — 2026-10-02
+
 - Repository: [Eminxe/Credit-risk-portfolio](https://github.com/Eminxe/Credit-risk-portfolio).
 - Tested source commit: [d9f52d0](https://github.com/Eminxe/Credit-risk-portfolio/commit/d9f52d0245b948d3a9ea5dbf66fee74dc00a7688).
 - [Push checks](https://github.com/Eminxe/Credit-risk-portfolio/actions/runs/37003931160): success.

@@ -48,7 +48,8 @@ It uses no private Plata data, and every monetary result is a declared scenario,
 | Constrained optimisation of credit limits | Case 03 |
 | Experiment analysis: ITT, confidence intervals, multiple testing | Case 05 · `src/plata_risk/experiment.py` |
 | Portfolio monitoring: vintages, grade mix, roll rates | Case 06 · `src/plata_risk/portfolio.py` |
-| SQL, PostgreSQL, Docker, CI, unit tests, reproducibility | `sql/`, `docker/`, `.github/`, `tests/` |
+| SQL: window functions, NTILE deciles, KS, cut-off simulation, vintages over JSONB | [`sql/risk_queries.sql`](sql/risk_queries.sql), run in CI on the real data |
+| PostgreSQL, Docker, CI, unit tests, reproducibility | `docker/`, `.github/`, `tests/` |
 
 ## Quick start
 
